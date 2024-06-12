@@ -2,90 +2,31 @@ package main
 
 import (
 	"fmt"
-	"slices"
-
-	"github.com/mafredri/go-trueskill"
+	"trueskill-test/pkg"
 )
 
-func calculateTeam(players []trueskill.Player) trueskill.Player {
-	mean, stddev := 0.0, 0.0
-	for _, p := range players {
-		mean += p.Mean()
-		stddev += p.StdDev()
-	}
-
-	return trueskill.NewPlayer(mean, stddev)
-}
-
 func main() {
-	ts := trueskill.New(trueskill.DrawProbabilityZero())
-	players1 := []trueskill.Player{
-		ts.NewPlayer(),
-		ts.NewPlayer(),
-	}
+	p1 := pkg.NewDefaultPlayer("1")
+	p2 := pkg.NewDefaultPlayer("2")
+	p3 := pkg.NewDefaultPlayer("3")
+	p4 := pkg.NewDefaultPlayer("4")
 
-	players2 := []trueskill.Player{
-		ts.NewPlayer(),
-		ts.NewPlayer(),
-	}
+	team1 := pkg.NewTeam(&p1)
+	team2 := pkg.NewTeam(&p2)
+	team3 := pkg.NewTeam(&p3)
+	team4 := pkg.NewTeam(&p4)
 
-	for i := 0; i < 20; i++ {
-		slices.Reverse(players1)
-		var prob1, prob2 float64
-		players1, prob1 = ts.AdjustSkills(players1, false)
-		players2, prob2 = ts.AdjustSkills(players2, false)
+	game1 := pkg.NewGame(&team1, &team2)
+	game2 := pkg.NewGame(&team3, &team4)
 
-		fmt.Println("Iteration", i+1)
-		fmt.Println("Probabilities")
+	fmt.Println("Game 1 Match Quality: ", game1.MatchQuality())
+	fmt.Println("Game 2 Match Quality: ", game2.MatchQuality())
 
-		fmt.Println(players2)
-		fmt.Println(prob1)
-		fmt.Println(prob2)
-		fmt.Println("Players 1")
-		fmt.Println(players1)
-		fmt.Println("Players 2")
-		fmt.Println("------------------------------------------------")
-	}
+	game1.UpdateRatings(true)
+	game2.UpdateRatingsDraw()
 
-	fmt.Println("STARTING")
-
-	team1 := calculateTeam(players1)
-	team2 := calculateTeam(players2)
-
-	teams := []trueskill.Player{team1, team2}
-	teams, prob := ts.AdjustSkills(teams, false)
-	fmt.Println(prob)
-	fmt.Println(teams)
-
-	// players1 := []trueskill.Player{
-	// 	ts.NewPlayer(),
-	// 	ts.NewPlayer(),
-	// }
-
-	// for i := 0; i < 1000000; i++ {
-	// 	players1[1] = trueskill.NewPlayer(players1[0].Mean(), players1[0].StdDev())
-	// 	// var prob float64
-
-	// 	// players1, prob = ts.AdjustSkills(players1, false)
-
-	// 	players1, _ = ts.AdjustSkills(players1, false)
-	// 	// fmt.Println("Iteration", i+1)
-	// 	// fmt.Println("Probabilities")
-	// 	// fmt.Println(prob)
-	// 	// fmt.Println("Players 1")
-	// 	// fmt.Println(players1)
-	// 	// fmt.Println("------------------------------------------------")
-	// }
-
-	// fmt.Println("Players 1")
-	// fmt.Println(players1)
-
-	// fmt.Println(prob)
-	// for _, p := range players1 {
-	// 	fmt.Println(p)
-	// }
-
-	// for _, p := range players2 {
-	// 	fmt.Println(p)
-	// }
+	fmt.Println("Player 1 Skill: ", p1.GetPlayerSkill())
+	fmt.Println("Player 2 Skill: ", p2.GetPlayerSkill())
+	fmt.Println("Player 3 Skill: ", p3.GetPlayerSkill())
+	fmt.Println("Player 4 Skill: ", p4.GetPlayerSkill())
 }
