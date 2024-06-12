@@ -1,4 +1,4 @@
-module github.com/dev-luka-ciric/trueskill-test
+module trueskill-test
 
 go 1.21.3
 
